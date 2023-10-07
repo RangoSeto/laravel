@@ -1,0 +1,195 @@
+=>Controller
+
+php artisan make:controller studentsController
+//studentsController ဒီအတိုင်းပဲရေးရမယ် Controllerမှန်းသိအောင် cကြီး
+
+
+
+// ပုံမှန်ဆို routeကနေviewကိုတိုက်ရိုက်လုပ်တာ ဒါကကြားထဲကcontrollerကလုပ်ပေးတာ
+
+Route::get('/students',[\App\Http\Controllers\studentsController::class,'index']);
+
+
+
+Route::get('/students',[\App\Http\Controllers\studentsController::class,'index'])->name('students.index');
+Route::get('/students/show',[\App\Http\Controllers\studentsController::class,'show'])->name('students.show');
+Route::get('/students/edit',[\App\Http\Controllers\studentsController::class,'edit'])->name('students.edit');
+
+
+
+
+// => Route Group 
+(/,show,edit တွေရဲ့ရှေ့မှာ students ကို၁ခါထဲထည့်ထားပြီးသားလုပ်တာ)
+
+Route::group(['prefix'=>'students'],function(){
+	Route::get('/',[\App\Http\Controllers\studentsController::class,'index'])->name('students.index');
+	Route::get('/show',[\App\Http\Controllers\studentsController::class,'show'])->name('students.show');
+	Route::get('/edit',[\App\Http\Controllers\studentsController::class,'edit'])->name('students.edit');
+});
+
+
+
+
+nameကိုgroup ဖွဲ့ရင် routeကိုgroupဖွဲ့လို့မရ
+
+Route::name('students.')->group(function(){
+	Route::get('/students',[\App\Http\Controllers\studentsController::class,'index'])->name('index');
+	Route::get('/students/show',[\App\Http\Controllers\studentsController::class,'show'])->name('show');
+	Route::get('/students/edit',[\App\Http\Controllers\studentsController::class,'edit'])->name('edit');
+});
+
+
+အပေါ်ဆုံးမှာဒါသွားရေးထားလိုက်ရင်ရ locationမှားစရာမလိုအောင်
+use App\Http\Controllers\studentsController;
+
+Route::name('students.')->group(function(){
+	Route::get('/students',[studentsController::class,'index'])->name('index');
+	Route::get('/students/show',[studentsController::class,'show'])->name('show');
+	Route::get('/students/edit',[studentsController::class,'edit'])->name('edit');
+});
+
+
+
+Route::get('about/company/{staff}',function($staff){
+	return view('aboutcompanystaff',['sf'=>$staff]);
+});
+
+Route::get('about/company/{staff}/{city}',function($staff,$city){
+	return view('aboutcompanystaffbycity',['sf'=>$staff,'ct'=>$city]);
+});
+
+Route::get('profile',function(){
+	return view('profileme');
+});
+
+Route::get('profile',function(){
+	return view('profileme');
+})->name('profiles');
+
+
+
+
+// ရှေ့ကဟာတွေက routeကနေviewကိုတိုက်ရိုက်လုပ်တာ ဒါကကြားထဲကcontrollerကလုပ်ပေးတာ
+
+Route::get('/students',[\App\Http\Controllers\studentsController::class,'index'])->name('students.index');
+Route::get('/students/show',[\App\Http\Controllers\studentsController::class,'show'])->name('students.show');
+Route::get('/students/edit',[\App\Http\Controllers\studentsController::class,'edit'])->name('students.edit');
+
+// ဒါက controllerထဲကဟာ
+public function index(){
+
+        //calculate in here
+        return view('students/index');
+    }
+
+    public function show(){
+        return view('students/show');
+    }
+
+    public function edit(){
+        return view('students/edit');
+    }
+
+
+
+// => Route Group
+Route::group(['prefix'=>'students'],function(){
+Route::get('/',[\App\Http\Controllers\studentsController::class,'index'])->name('students.index');
+Route::get('/show',[\App\Http\Controllers\studentsController::class,'show'])->name('students.show');
+Route::get('/edit',[\App\Http\Controllers\studentsController::class,'edit'])->name('students.edit');
+});
+
+
+
+Route::name('students.')->group(function(){
+Route::get('/students',[\App\Http\Controllers\studentsController::class,'index'])->name('index');
+Route::get('/students/show',[\App\Http\Controllers\studentsController::class,'show'])->name('show');
+Route::get('/students/edit',[\App\Http\Controllers\studentsController::class,'edit'])->name('edit');
+});
+
+
+
+php artisan make:controller staffsController
+
+
+
+// ဒါကိုအပေါ်ဆုံးမှာတက်ရေးလိုက် ဘုံထုတ်လိုက်သလိုဖြစ်သွားတာ အောက်မှာအကုန်လိုက်ရေးနေစရာမလိုတော့
+use App\Http\Controllers\studentsController;
+
+Route::name('students.')->group(function(){
+	Route::get('/students',[studentsController::class,'index'])->name('index');
+	Route::get('/students/show',[studentsController::class,'show'])->name('show');
+	Route::get('/students/edit',[studentsController::class,'edit'])->name('edit');
+});
+
+
+Route::get('/staffs',[staffsController::class,'home'])->name('staffs.home');
+Route::get('/staffsparty',[staffsController::class,'party'])->name('staffs.party');
+Route::get('/staffsparty/{total}',[staffsController::class,'partytotal'])->name('staffs.total');
+Route::get('/staffsparty/{total}/{status}',[staffsController::class,'partytotalconfirm'])->name('staffs.status');
+
+//IN Controller return view with para
+public function partytotal($total){
+    return view('staffs/partytotal',['total'=>$total]);
+}
+//view ထဲမှာ 'total' လို့ပြောထားလို့ {{$total}} နဲ့ပြန်ဖမ်း
+
+public function partytotalconfirm($total,$status){
+    return view('staffs/partytotalconfirm',['total'=>$total,'status'=>$status]);
+}
+
+
+<li><a href="{{URL::to('staffs')}}">Home</a></li>
+<li><a href="{{route('staffs.party')}}">Party</a></li>
+
+
+
+Route::get('employees',[employeesController::class,'index'])->name('employees.index');
+Route::get('employees/show',[employeesController::class,'index'])->name('employees.show');
+
+
+public function index(){
+
+        // employeedata ကအဲ့arrထဲကnameလိုဖြစ်သွားတာ
+        $data['employeedata'] = [
+            'name'=>'Aung Ko Ko',
+            'email'=>'aungkoko@gmail.com',
+            'phone'=>'09123456'
+        ];
+
+        // dd($data); //dataထုတ်ကြည့်တဲ့ဟာ echoလိုဟာမျိူး
+
+        return view('employees/index',$data); //viewကိုလှမ်းပို့ရင် arrayနဲ့ပို့ပေးရ
+    }
+
+
+
+
+    <?php
+        // foreach($employeedata as $value){
+        //     echo $value;
+        // }
+    ?>
+
+    <!-- @php 
+        foreach($employeedata as $value){
+            echo $value;
+        }
+    @endphp -->
+    <!-- bladeမှာဒီလိုပုံစံနဲ့ရေးလို့ရ @ -->
+
+    <ul>
+        @foreach($employeedata as $value) //ဒီ၁ကြောင်းကပဲphp code ကြားထဲကဟာတွေနဲ့မဆိုင်ဘူး
+            <li>{!!$value!!}</li> //php ထဲကဟာကို encodeလုပ်ဖို့က {!! !!} အဲ့လိုခေါ်သုံးပေးရမယ်
+        @endforeach  //ဒီ၁ကြောင်းကပဲphp code
+    </ul>
+
+
+-------------------------------------------------
+
+
+=> Resource Controller (သူ့အတွက် crud တွေကို auto လုပ်ပေးထားပီးသား)
+
+php artisan make:controller CountriesController --resource
+(or)
+php artisan make:controller CountriesController -r

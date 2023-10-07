@@ -1,0 +1,483 @@
+=>Migration (table တွေတည်ဆောက်)
+
+database > migrations
+
+
+.env
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=exerciseone
+DB_USERNAME=root
+DB_PASSWORD=
+
+(pw ရှိရင်ပေး "" တွေမလို , port changeထားရင်ပြောင်း)
+
+
+(mysqlကို individual သွင်းထားမှ ဒီဟာသုံးလို့ရ သုံးချင်ရက် xampp ထဲကနေ၁ဆင့်ထပ်ဝင်ရမယ်)
+mysql -u root -p
+PW ရိုက်
+
+status
+CREATE DATABASE  exerciseone;
+
+SHOW DATABASES;
+
+
+
+
+=>table to update db server
+
+php artisan migrate
+
+
+
+=>Create New Table
+php artisan make:migration create_students_table
+php artisan make:migration create_workers_table --create="workers"
+
+
+( table = create_students_table , tablenameပေးရင် create_tablename_table အဲ့လိုပုံစံနဲ့ပေးရမယ်)
+
+
+Schema::create('students', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('phonenumber');
+            $table->timestamps();
+        });
+($table->timestamps(); က created_at , updated_at အတွက်ပေးတာ)
+
+
+php artisan migrate
+
+
+
+=>Avaliable Column Types
+
+$table->id(); //auto_inc, primary key ပေးထားပီးသား
+$table->bigIncrements('id'); //numberတွေအများကြီး Inc လုပ်မှာ
+$table->increments('id'); // bigIncrements ထက် numberနည်း
+$table->bigInteger('id'); //ရိုးရိုးid ကိန်ပြည့်လေး
+$table->unsignedInteger('id'); // -value ထည့်လိုမရတာ
+$table->unsignedBigInteger('id');
+$table->tinyInteger('votes'); 
+$table->smallInteger('votes'); // numberနည်းတယ် vote တွေပေးရင်သုံးတာမျိူး num ၃ခု၄ခုလောက်ရှိတာမျိုး
+$table->binary('photo'); //binary codeထည့်တာ
+$table->boolean('confirmed'); // true,false, 0,1ထည့်တာ
+$table->char('name',30); //nameလောက်သုံးတယ် 
+$table->string('name',100); //VARCHAR(100)
+$table->text('description');
+$table->tinytext('notes');
+$table->mediumtext('description');
+$table->longtext('post');
+$table->time('bookingtime'); //အချိန် နာရီပဲထည့်တာ
+$table->date('created_at'); //date ပဲထည့်တာ ရက်
+$table->year('birthyear'); //year
+$table->timestamps(); //အစုံပါတာ day date time
+$table->timestamp(); //custom ပေးတာ
+$table->decimal('amount',precision=8,scale=2);
+$table->float('measure',precision=8,scale=2);
+$table->enum('payment',['visa','mpu','cod','kpay','wave']);
+$table->json('multiphones');
+
+
+
+=>List all files from database > migrations files
+php artisan migrate:status
+
+
+=>Undo migration (migrateလုပ်ထားပီးသား tableကိုပြင်ချင်ရင်ဒီတိုင်းပြင်လို့မရ migrateလုပ်ထားတာကိုပြန်ဖြုတ် ပြင်ပြီးမှ ပြန်တင်ရမယ်) (နောက်ဆုံး migrateလုပ်ထားပီးသား table ပြန်ကျ နောက်၁ကြိမ်ထပ်လုပ်ရင် အဲ့နောက်က migrateလုပ်ထားတဲ့ဟာကျမှာ)
+php artisan migrate:rollback
+
+
+=>check Migration Status
+php artisan migrate:status
+
+
+
+php artisan make:migration create_staffs_table --create="staffs"
+php artisan make:migration create_employees_table --create="employees"
+
+
+=>Undo migration by step (selected count to table)
+php artisan migrate:rollback --step=2
+
+
+=>Check before rollback table list (ကိုယ်က rollback လုပ်လိုက်ရင် ဘာtableတွေပြန်ကျလာမလဲဆိုတာကြိုကြည့်တဲ့ဟာ)
+php artisan migrate:rollback --pretend
+
+(rollback လုပ်ရင်သတိထားသင့် data ထည့်ပြီးရင်တော့ လုံးဝ rollback မလုပ်သင့်) (migrateလုပ်လိုက်ရင် အထဲကdataအကုန်ပျက်မှာ)
+
+
+
+=>Delete all tables
+php artisan migrate:reset
+
+
+php artisan make:migration create_shoppers_table --create="shoppers"
+
+=>Delete all datas (auto rollback and auto migrate) (batch 1တွေအကုန်ပြန်ဖြစ်သွားတယ်, dataအကုန်လည်းပျက်သွား)
+php artisan migrate:refresh
+
+=>Delete all datas (auto rollback and auto migrate / selected table count to local by DESC)
+php artisan migrate:refresh --step=2
+
+
+
+
+=>Add New Columns (migrationလုပ်ပီးမှ coluumnကျန်ခဲ့လို့ထပ်ထည့်ချင်ရင်) (dataမဆုံးရှုံးဘူး)
+
+php artisan make:migration add_city_to_shoppers_table --table=shoppers
+
+
+$table->string('city'); to add_city_to_shoppers_table
+
+(ထပ်ထည့်ချင်တဲ့ဟာက add dbထဲမှာသွားရေး)
+
+
+=>Sort Column
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+$table->string('city')->after('phonenumber'); to add_city_to_shoppers_table (afterပဲရှိတာ beforeမရှိ)
+
+
+
+php artisan make:migration add_city_to_employees_table --table=employees
+
+$table->string('city')->after('phonenumber');
+
+
+=>Up vs down
+php artisan make:migration add_city_to_staffs_table --table=staffs
+
+$table->string('city')->after('phonenumber');
+
+=>down
+$table->dropColumn('city');
+
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+// migrateလုပ်လို့ပျက်စေချင်ရင် upထဲမှာရေးရ
+
+
+
+=>Drop Column
+
+php artisan make:migration remove_id_to_students_table --table=students
+=>up
+$table->dropColumn('id');
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+
+
+php artisan make:migration remove_id_to_workers_table --table=workers
+=>up
+$table->dropColumn(['id','phonenumber']);
+=>down
+$table->id()->first();
+$table->string('phonenumber')->after('fullname');
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+
+
+php artisan make:migration remove_id_to_staffs_table --table=staffs
+=>up
+
+    Note:: hasColumn(table,columnname)
+
+if(Schema::hasColumn('staffs','id')){
+    Schema::table('workers', function (Blueprint $table) {
+            $table->dropColumn('id');
+        });
+}
+
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+=>down
+$table->id()->first();
+
+php artisan migrate
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+
+
+=>Rename Columns renameColumn(from,to)
+php artisan make:migration rename_students_column --table=students
+=>up
+$table->renameColumn('phonenumber','phone');
+$table->renameColumn('address','city');
+=>down
+$table->renameColumn('phone','phonenumber');
+$table->renameColumn('city','address');
+
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+
+
+=>Rename Table  rename(from,to)
+php artisan make:migration rename_employees_to_customers --table=employees
+=>up
+Schema::rename('employees','customers');
+=>down
+Schema::rename('customers','employees');
+
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:rollback --pretend
+php artisan migrate:rollback
+php artisan migrate
+
+
+
+=>Defult Value
+php artisan make:migration create_books_table --create="books"
+
+Schema::create('books', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title');
+            $table->tinyInterger('status')->default('1');
+            $table->enum('copyright',['0','1'])->default('0');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP')); //timestamp not include s (mysql codeရေးချင်ရင် DB::raw နဲ့ရေး) 
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
+
+
+
+php artisan make:migration create_profiles_table --table="profiles"
+
+Schema::table('profiles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('givenname',100);
+            $table->string('familyname',100);
+            $table->enum('gender',array('male','female','unisex'))->default('female');
+            $tale->text('bio');
+            $table->unsignedBigInteger('user_id');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable->useCurrentOnUpdate(); //laravelမှာပေးတဲ့ပုံစံ
+        });
+
+
+=>Creating Indexes
+
+$table->string('email')->unique();
+
+php artisan make:migration create_authors_table --create="authors"
+php artisan make:migration create_types_table --create="types"
+php artisan make:migration create_posts_table --create="posts"
+
+
+=>Foreign Key Constraints
+
+Method 1
+$table->unsignedBigInteger('user_id');
+$table->foreign('user_id')->references('id')->on('users');
+
+Method 2
+$table->foreignId('user_id')->constrained('users');
+
+
+// In authors
+Schema::create('authors', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+
+// In types
+Schema::create('types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+
+// In posts
+Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title')->unique();
+            $table->text('description');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+
+            $table->foreignId('author_id')->constrained('authors')->onUpdate('cascade')->onDelete('cascade');
+
+            $table->year('year');
+
+            $table->unsignedBidInteger('type_id');
+            $table->foreign('type_id')->references('id')->on('types')->onUpdate('cascade')->onDelete('cascade');
+
+            $table->timestamps();
+        });
+
+
+
+
+// =>Data Insert From route
+
+
+// use Illuminate\Support\Facades\DB;
+Route::get('types/insert',function(){
+    DB::insert("INSERT INTO types(name) value(?)",["pdf"]);
+    return "Successfully Inserted";
+});
+
+Route::get('types/read',function(){
+ $results = DB::select("SELECT * FROM types");
+ return $results;
+});
+
+Route::get('types/read',function(){
+ $results = DB::select("SELECT * FROM types");
+ return var_dump($results);
+});
+
+
+Route::get('types/read',function(){
+ $results = DB::select("SELECT * FROM types");
+    
+ foreach($results as $type){
+     echo $type->name . "<br/>";
+ }
+});
+
+
+Route::get('types/read',function(){
+    $results = DB::select("SELECT * FROM types WHERE id=?",[3]);
+    
+    return $results;
+});
+
+
+
+Route::get('students/insert',function(){
+    DB::insert('INSERT INTO students(name,phonenumber,address) value(?,?,?)',['aung aung','1111','yangon']);
+    return "Data Inserted";
+});
+
+Route::get('students/update',function(){
+    // DB::update("UPDATE types SET name='ebook' WHERE id=?",[3]);
+    // DB::update("UPDATE types SET name='pdf' WHERE id=?",['3']);
+
+    return "Data Updated";
+});
+
+
+Route::get('shoppers/update',function(){
+    DB::update("UPDATE shoppers SET fullname=?,phonenumber=?,city=? WHERE id=?",['kyaw kyaw','22222','bago','3']);
+
+    return "Data Updated";
+});
+
+Route::get('shoppers/delete',function(){
+    DB::delete('DELETE FROM shoppers WHERE id=?',[2]);
+
+    return "Data Deleted";
+});
+
+
+Route::get('shoppers/read',function(){
+
+    // $results = DB::select('SELECT * FROM shoppers');
+    // return $results;
+
+    // $results = DB::select('SELECT * FROM shoppers WHERE id=?',[6]);
+    // return $results;
+
+    // $results = DB::table('shoppers')->get();
+    // return $results;
+
+
+    // =>select(columns)
+    // =>selectRaw(expression) // expression = conditionစစ်တာတွေပါတာကိုပြောတာ
+    // => DB::raw(value) // parameter ၁ခုပဲရှိရမှာ
+
+    // $results = DB::table('shoppers')->select('*')->get();
+    // $results = DB::table('shoppers')->selectRaw('*')->get();
+
+    // $results = DB::table('shoppers')->select(DB::raw('*'))->get();
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('*'))->get();
+
+    // $results = DB::table('shoppers')->select('*')->where('id',5)->get();
+    // $results = DB::table('shoppers')->select('fullname')->where('id',5)->get();
+    // $results = DB::table('shoppers')->select('fullname','phonenumber')->where('id',5)->get();
+    // $results = DB::table('shoppers')->select('fullname','phonenumber','city')->where('id',5)->get();
+    // $results = DB::table('shoppers')->select('fullname','phonenumber','city')->where('id','<>',5)->get();
+
+    // $results = DB::table('shoppers')->select(DB::raw('*'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->select(DB::raw('fullname'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->select(DB::raw('fullname,phonenumber'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->select(DB::raw('fullname,phonenumber,city'))->where('id',5)->get();
+
+
+    //selectRaw ကလည်း DB::raw လိုပဲ para ၁ခုပဲပေးလို့ရလို့ ''ထဲ ,ခံပေးရမှာ
+    // $results = DB::table('shoppers')->selectRaw('*')->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw('fullname')->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw('fullname,phonenumber')->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw('fullname,phonenumber,city')->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw('fullname,phonenumber,city')->where('id','<>',5)->get();
+
+    
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('*'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('fullname'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('fullname,phonenumber'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('fullname,phonenumber,city'))->where('id',5)->get();
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('fullname,phonenumber,city'))->where('id','<>',5)->get();
+
+    // *error (select က count(*)ကိုမသိ columnsတွေပဲသိမယ်)
+    // $results = DB::table('shoppers')->select('count(*) AS totalshopper,city')->where('id','<>',5)->groupBy('city')->get();
+
+    // *oki (DB::raw() က count()တွေကိုသိတယ်)
+    // $results = DB::table('shoppers')->select(DB::raw('count(*) AS totalshopper,city'))->where('id','<>',5)->groupBy('city')->get();
+
+
+    //selectRaw()ကcount()ကိုလည်းသိတယ် DB::raw()မပါလည်းရ ပါလည်းဘာမှမထူး
+    // $results = DB::table('shoppers')->selectRaw('count(*) AS totalshopper,city')->where('id','<>',5)->groupBy('city')->get();
+    // $results = DB::table('shoppers')->selectRaw(DB::raw('count(*) AS totalshopper,city'))->where('id','<>',5)->groupBy('city')->get();
+    // return $results;
+
+    // $results = DB::table('shoppers')->first(); //ရှေ့ဆုံးdataထွက်လာမှာ
+    // return $results;
+
+
+    // =>plunk(value,key) //value,key၂ခုလုံးက column nameတွေဖြစ်ရမယ်
+
+    // $results = DB::table('shoppers')->pluck('fullname'); //array
+    $results = DB::table('shoppers')->pluck('fullname','id'); //object
+    return $results;
+
+
+});
+
+
+ 
+
+
+

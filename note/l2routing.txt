@@ -1,0 +1,122 @@
+=>Route
+
+routes > web.php (or) routes > api.php
+
+=>Avaliable Router Methods 
+Route::get(uri,callback);
+Route::post(uri,callback);
+Route::put(uri,callback);
+Route::patch(uri,callback);
+Route::delete(uri,callback);
+Route::options(uri,callback);
+
+
+
+routeမရှိရင် 404 not found
+(/ က default ဘာမှမပါရင်)
+route ၁ကြောင်းက page၁ခုအတွက်ပဲဖြစ်ရမှာ
+
+=>Basic Routing
+
+Route::get("/",function(){
+	return "Save Myanmar";
+}); 
+
+Route::get("/sayar",function(){
+	return "Hay,Sayar Nay Kaung Lar??";
+}); 	//(http://127.0.0.1:8000/sayar => ဆို ဒါပေါ်မှာ)
+
+Route::get("sayhi",function(){
+	return "Hi Min Ga Lar Par";
+}); //(ရှေ့က / ကမထည့်ချင်လည်းရ)
+
+
+
+Route::get("about",function(){
+	return view("aboutme");
+});
+
+(or)
+
+Route::view("about","aboutme");
+
+
+Route::get("about/company",function(){
+   return view('aboutcompany');
+});
+
+(or)
+
+Route::view('about/company','aboutcompany');
+
+-----------------------------------------------------
+
+=>Redirect Routing (routeအချင်းချင်းပြန်သွားတာ)
+=Syntax
+Route::get(uri,function(){
+	return redirect(routename)
+});
+
+
+Route::get('contact',function(){
+	return redirect('about');
+});
+(or)
+=Syntax
+Route::redirect(uri,routename);
+
+Route::redirect('contact','about');
+
+Route::redirect('contact','about/company');
+
+-----------------------------------------------------
+
+
+=>Route with Parameter (edit ပြန်လုပ်တာတွေမှာသုံးတယ်)
+
+=Single Parameter
+
+Route::get('about/company/{staff}',function($staff){
+	return view('aboutcompanystaff',['sf'=>$staff]); //sf က viewထဲမှာဆိုအဲ့name နဲ့ယူသုံးမှာ
+});
+
+// http://127.0.0.1:8000/about/company/aungaung ဆိုရင် $staff နေရာမှာ aungaung ကဝင်လာမှာ
+
+
+
+=Multi Parameter
+
+Route::get('about/company/{staff}/{city}',function($staff,$city){
+	return view('aboutcompanystaffbycity',['sf'=>$staff,'ct'=>$city]);
+});
+
+// http://127.0.0.1:8000/about/company/aungaung/yangon $staff ထဲ aungaungဝင် $cityထဲ yangonဝင်
+
+
+
+// <li><a href="{{URL::to('/')}}">Home</a></li> //Home ကိုနှိပ်ရင် home pageကိုရောက်သွားမယ်
+
+// <li><a href="{{URL::to('/about/')}}">About</a></li> ဒါဆို sayar routeကိုရောက်သွားမှာ
+
+
+
+
+=>Naming Route
+
+ဒီrouteကို name ၁ခုအနေနဲ့သတ်မှတ်လိုက်တာ
+
+Route::get('profile',function(){
+	return view('profileme');
+})->name('profiles');
+
+// <li><a href="{{route('profiles')}}">Profile</a></li> <!-- namingပေးထားတဲ့routeကိုပြန်ခေါ်တဲ့နည်း -->
+
+
+
+<li><a href="{{URL::to('/sayar')}}">Sayar</a></li>
+// ပုံမှန်ဟာတွေကိုတော့ဒီလိုခေါ်တာ
+
+
+
+route name,controller name,modal name ကိုပေးရင် အများကိန်းပေးစံစနစ်မဟုတ်, db nameယူရင်တော့အများကိန်းပေး စံစနစ်
+

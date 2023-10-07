@@ -1,0 +1,668 @@
+=>Eloquent One to One relationship / hasOne(class)
+
+=>Migration
+php artisan make:model Phone -m
+
+$table->string('number');
+$table->integer('user_id')->unsigned();
+
+php artisan migrate:status
+php artisan migrate
+
+
+=In Model (Phone.php)
+
+protected $table = 'phones';
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'number',
+        'user_id'
+    ];
+
+=In Model (User.php)
+public function phone(){
+        return $this->hasOne(Phone::class);
+    }
+
+
+=In web
+Route::get('users/{id}/phone/insert',function($id){
+
+	$user = User::findOrFail($id);
+
+	// Method1
+	$phone = new Phone;
+	$phone->number = "09444444";
+	$phone->user_id = $user->id; //$id လို့ပေးလည်းအတူတူပဲ
+	$phone->save(); //new နဲ့ခေါ်ထားလို့ save ပြန်လုပ်ပေးရမှာ
+	return "Data Inserted";
+
+	// =Method2 
+	$phone = Phone::create([
+		'number'=>'09555555',
+		'user_id'=>$user->id
+	]);
+	return "Data Inserted";
+
+	// =Method 3 
+	// $phone = new Phone([
+	// 	'number'=>'09666666',
+	// 	'user_id'=>$user->id
+	// ]);
+	// $user->phone()->save($phone);
+	// return "Data Inserted";
+
+	// =Method 4 (no need user id cuz use with phone())
+	// $phone = new Phone([
+	// 	'number'=>'09666666',
+	// ]);
+	// $user->phone()->save($phone);
+	// return "Data Inserted";
+
+	// =Method 5
+	// $user->phone()->save(new Phone([
+	// 	'number'=>'0911111',
+	// 	'user_id'=>$user->id
+	// ]));
+	// return "Data Inserted";
+
+	// =Method 6 (no need user id cuz use with phone())
+	$user->phone()->save(new Phone([
+		'number'=>'09222222',
+	]));
+	return "Data Inserted";
+
+});
+
+
+Route::get('users/{id}/phone/update',function($id){
+
+	$phone = Phone::whereUserId($id)->first(); //Phone ထဲက user_id ကိုသွားရှာမှာ Phone::whereUserId($id)->get()ဆိုအကုန်ရမှာ
+	$phone->number = "09-111-111";
+	$phone->save();
+	return "Data updated";
+
+	// ထည့်လိုက်တဲ့ id အကုန်လုံးကိုသွားပြောင်းမှာ
+	$phones = Phone::whereUserId($id)->get();
+	foreach($phones as $phone){
+		$phone->number = "09-111-112";
+		$phone->save(); //1ခုလုပ်ပြီးတိုင်း၁ခါsaveမှ data ကဝင်မှာ
+	}
+	return "Data updated";
+
+});
+
+
+Route::get('users/{id}/phone/read',function($id){
+	$user = User::findOrFail($id);
+	$user = $user->phone->number;
+
+	return "Data reading = $user";
+});
+
+
+Route::get('users/{id}/phone/delete',function($id){
+	// $user = User::findOrFail($id); //single delete (phone ဆို data ပထမဆုံး၁ခုပဲပျက်မယ်)
+	// $user = $user->phone->delete();
+	// return "Data Deleted";
+
+	$user = User::findOrFail($id); // bulk delete (phone() ဆို အကုန်ပျက်မယ်)
+	$user = $user->phone()->delete();
+	return "Data Deleted";
+});
+
+//------------------------------------
+
+=>Eloquent One to Many relationship / hasMany(class)
+
+=In Model (User.php)
+
+public function articles(){
+	return $this->hasMany(Article::class);
+}
+
+
+=In Model (Article.php)
+
+public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+
+
+=In Web
+
+Route::get('users/{id}/article/insert',function($id){
+
+	$user = User::findOrFail($id);
+
+	// =Method 1
+	// $article = new Article;
+	// $article->title = "this is new article 23";
+	// $article->description = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
+	// $article->user_id = $id;
+	// $article->rating = 5;
+	// $article->save();
+	// return "Data Inserted";
+
+	// =Method 2
+	// $article = Article::create([
+	// 	'title'=>'this is new article 24',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+	// 	'user_id'=>$id,
+	// 	'rating'=>3,
+	// ]);
+	// return "Data Inserted";
+
+	// =Method 3 
+	// $article = new Article([
+	// 	'title'=>'this is new article 25',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+	// 	'user_id'=>$id,
+	// 	'rating'=>3,
+	// ]);
+	// $user->articles()->save($article);
+	// return "Data Inserted";
+
+	// =Method 4 (no need user id cuz use with phone())
+	// $article = new Article([
+	// 	'title'=>'this is new article 26',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+	// 	'rating'=>3,
+	// ]);
+	// $user->articles()->save($article);
+	// return "Data Inserted";
+
+	// =Method 5
+	// $user->articles()->save(new Article([
+	// 	'title'=>'this is new article 27',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+	// 	'user_id'=>$id,
+	// 	'rating'=>5,
+	// ]));
+	// return "Data Inserted";
+
+	// =Method 6 (no need user id cuz use with phone())
+	$user->articles()->save(new Article([
+		'title'=>'this is new article 28',
+		'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+		'rating'=>5,
+	]));
+	return "Data Inserted";
+
+});
+
+//One to many
+=In Web (update)
+
+Route::get('users/{id}/article/update',function($id){
+
+	// $article = Article::whereUserId($id)->first(); //Single Update
+	// $article->title = "this is new article 29";
+	// $article->description = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
+	// $article->rating = 1;
+	// $article->save();
+	// return "Data updated";
+
+	$articles = Article::whereUserId($id)->get(); // bulk update
+	foreach($articles as $article){
+		$article->title = "this is new article 001";
+		$article->description = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
+		$article->rating = 5;
+		$article->save();
+	}
+	return "Data updated";
+
+
+
+	// Note:: find Userid and continue search Article id
+	// $user = User::findOrFail($id); // Single update
+	// $user->articles()->where('id','=',5)->update([
+	// 	'title'=>'this is new article 1000',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+	// 	'rating'=>1
+	// ]);
+	// return "Data updated";
+
+	// Note:: find Userid and continue search Article rating
+	$user = User::findOrFail($id); // bulk update
+	$user->articles()->where('rating','=',5)->update([
+		'title'=>'this is new article 1000',
+		'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+		'rating'=>3
+	]);
+	return "Data updated";
+
+});
+
+
+=In web (read)
+Route::get('users/{id}/article/read',function($id){
+	$user = User::findOrFail($id);
+	
+	foreach($user->articles as $article){
+		echo $article->title . "<br/>";
+	}
+
+});
+
+=In Web (delete)
+Route::get('users/{id}/article/delete',function($id){
+
+	// Beware:: In this case Article took soft delete 
+
+
+	// Note::error, cuz this is one to many relationship 
+	// $user = User::findOrFail($id);
+	// $user->articles->delete();
+	// return "Data Deleted";
+
+	// $user = User::findOrFail($id); //single delete
+	// $user->articles()->whereId(5)->delete();
+	// return "Data Deleted";
+
+	$user = User::findOrFail($id); // bulk delete
+	$user->articles()->delete();
+	return "Data Deleted";
+});
+
+
+//------------------------------------
+
+=>Eloquent Many to Many relationship / belongsToMany(class)
+
+
+=In Model (Role.php)
+
+protected $table = "roles";
+protected $primaryKey = "id";
+
+protected $fillable = [
+	'name'
+];
+
+
+=In Model (User.php)
+public function roles(){
+
+        // return $this->belongsToMany(Role::class); //obey by naming conversion
+
+        // =For Custom Table name
+        // BelongsToMany(primarytable,secondarytable,secondarytable_fk,primarytable_fk)
+        // BelongsToMany(related,dummytable,foreignPivotKey,relativePivotKey)
+
+        return $this->belongsToMany(Role::class,'userroles','user_id','role_id');
+    }
+
+
+=In Web
+
+Route::get('users/{id}/role/insert',function($id){
+	
+	$user = User::findOrFail($id);
+
+	$user->roles()->save(new Role([
+		'name'=>'adviser'
+	])); //ဒီလိုဆိုရင် roleထဲလည်းဝင် user_role tbထဲလည်းဝင် ဘယ်သူထည့်သွားတာလဲဆိုတဲ့ trackingသဘောမျိုးဖြစ်သွားတယ်
+
+	return "Data Inserted";
+
+});
+
+
+
+
+Route::get('users/{id}/role/update',function($id){
+
+	$user = User::findOrFail($id);
+
+	//roles ရှိသလားစစ်တာ rolesမရှိရင် laravel က try catch နဲ့ဖမ်းပီး errorပြမှာ
+	if($user->has('roles')){
+		foreach($user->roles as $role){
+			if($role->name === "adviser"){
+				$role->name = "co-worker";
+				$role->save();
+			}
+		}
+	}
+
+	return "Data Updated";
+
+});
+
+
+
+
+Route::get('users/{id}/role/read',function($id){
+
+	$user = User::findOrFail($id);
+
+	if($user->has('roles')){
+		foreach($user->roles as $role){
+			echo $role->name . "<br/>";
+		}
+	}
+
+});
+
+
+Route::get('users/{id}/role/delete',function($id){
+
+	// $user = User::findOrFail($id); // Single Delete 
+	// foreach($user->roles as $role){
+	// 	$role->whereId(4)->delete();
+	// }
+	// return "Data Deleted";
+
+
+	$user = User::findOrFail($id); // Bulk Delete 
+	$user->roles()->delete();
+	return "Data Deleted";
+
+});
+
+
+Route::get('users/{id}/role/attach',function($id){
+
+	// Note :: check Role table & Userrole table (no-action/action)
+	// Note :: added role permission to user id (userroles tbမှာdata သွားထည့်မှာ)
+	$user = User::findOrFail($id);
+	$user->roles()->attach(5);
+	return "Data Attached";
+
+});
+
+
+Route::get('users/{id}/role/detach',function($id){
+
+	// Note :: check Role table & Userrole table (no-action/action)
+	// Note ::romoved user permission for refer user id (userroles tbထဲမှာ အဲ့ idနဲ့ပက်သက်တာတွေအကုန်ပျက်တာ role tb မှာဘာမှလာမပျက်ဘူး)
+	$user = User::findOrFail($id);
+	$user->roles()->detach();
+	return "Data Detached";
+
+});
+
+
+Route::get('users/{id}/role/sync',function($id){
+
+	// sync က dataဖျက်ရုံပဲမဟုတ် မရှိရင် dataထည့်ပေးမယ်
+	// Note :: check Role table & Userrole table (no-action/action)
+
+	$user = User::findOrFail($id);
+
+	// Meaning :: want to keep only role id 2 for refer user id 
+	// $user->roles()->sync(2); // 2 ဖြစ်တဲ့ role ကိုပဲချန်ခဲ့မယ် ကျန်တဲ့roleအကုန်ပျက်သွားမယ်
+
+	// Meaning :: want to keep only role id 2,4 for refer user id 
+	// $user->roles()->sync([2,4]); // 2နဲ့4 ဖြစ်တဲ့ role ကိုပဲချန်ခဲ့မယ် ကျန်တဲ့roleအကုန်ပျက်သွားမယ်
+
+	// Meaning :: want to keep existing role id 2,4 and add more role id 1,5 for refer user id
+	$user->roles()->sync([1,2,4,5]);
+
+
+	return "Data Synced";
+
+});
+
+// --------------------------------------------------------------------------------------------
+
+// => Eloquent Polymorphic Relationship  morphTo() morphMany()
+
+=In Model (Photo.php)
+
+
+    protected $table = 'photos';
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'path',
+        'imageable_id',
+        'imageable_type'
+    ];
+    
+
+    // imageable ကပေးကိုပေးရမှာ မပေးရင် အောက်ကလိုပြန်ပြောပေးရမှာ
+    // public function imageable(){
+    //     // morphTo();
+    //     return $this->morphTo();
+    // }
+
+    public function photoable(){
+        // morphTo('name');
+        return $this->morphTo('imageable'); // Note:: if you use imageable_id imageable_type ! set here imageable
+    }
+
+
+=In Model (User.php)
+
+public function photos(){
+        // morphMany(relatedtable,name);
+        return $this->morphMany(Photo::class,'imageable');
+    }
+
+
+=In Model (Article.php)
+
+public function photos(){
+        // morphMany(relatedtable,name);
+        return $this->morphMany(Photo::class,'imageable');
+    }
+
+
+=In Web
+
+
+Route::get('users/{id}/photo/insert',function($id){
+
+	$user = User::findOrFail($id);
+
+	$user->photos()->save(new Photo([
+		'path'=>'public\assets\photo\profile1.jpg'
+	]));
+
+	return "Data Inserted";
+
+});
+
+
+Route::get('articles/{id}/photo/insert',function($id){
+
+	$article = Article::findOrFail($id);
+
+	$article->photos()->create([
+		'path'=>'public\assets\photo\articlepic5.jpg'
+	]);
+
+	return "Data Inserted";
+
+});
+
+
+Route::get('users/{id}/photo/read',function($id){
+
+	$user = User::findOrFail($id);
+
+	if($user->has('photos')){
+		foreach($user->photos as $photo){
+			echo $photo->path . "<br/>";
+		}
+	}
+
+});
+
+
+Route::get('users/{id}/photo/update',function($id){
+
+	$user = User::findOrFail($id);
+	$photo = $user->photos()->whereId(9)->first();
+	$photo->path = 'public\assets\photo\userprofile1.jpg';
+	$photo->save();
+
+	return "Data Update";
+
+});
+
+
+Route::get('users/{id}/photo/updateimgtype',function($id){
+
+	$user = User::findOrFail($id);
+	$photo = Photo::findOrFail(16);
+
+	$user->photos()->save($photo); // Update for App\Models\Article to App\Models\User
+
+	return "Data Update";
+
+});
+
+
+Route::get('users/{id}/photo/delete',function($id){
+
+	// $user = User::findOrFail($id); // Single Delete
+	// $user->photos()->whereId(9)->delete(); 
+	// return "Data Deleted";
+
+
+	$user = User::findOrFail($id); // Bulk Delete
+	$user->photos()->delete(); 
+	return "Data Deleted";
+
+});
+
+// ----------------------------------------------------------------------
+
+// => Eloquent Polymorphic Many to Many Relationship morphToMany()
+
+=In Model (Item.php)
+
+protected $table = 'items';
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'name'
+    ];
+
+public function tags(){
+        // MorphToMany(relatedtable,name);
+        return $this->morphToMany(Tag::class,'taggable');
+    }
+
+
+
+=In Model (Article.php)
+public function tags(){
+        // morphToMany(relatedtable,name);
+        return $this->morphToMany(Tag::class,'taggable');
+    }
+
+
+
+
+=In Model (Tag.php)
+
+public function articles(){
+        // morphedByMany(relatedtable,name);
+        return $this->morphedByMany(Article::class,'taggable');
+    }
+
+    public function items(){
+        // morphedByMany(relatedtable,name);
+        return $this->morphedByMany(Item::class,'taggable');
+    }
+
+
+=In web
+
+
+Route::get('items/tag/{id}/insert',function($id){
+
+	// Note :: Check Item table & Taggable table (action / action)
+
+	$item = Item::create([
+		'name'=>'Joey'
+	]);
+
+	$tag = Tag::findOrFail($id);
+	$item->tags()->save($tag);
+
+	return "Data Inserted";
+
+});
+
+
+Route::get('items/{id}/tag/read',function($id){
+
+	$item = Item::findOrFail($id);
+
+	if($item->has('tags')){
+
+		foreach($item->tags as $tag){
+			echo $tag->name . "<br/>";
+		}
+
+	}
+});
+
+
+Route::get('items/{id}/tag/update',function($id){
+
+	// $item = Item::findOrFail($id);
+
+	// if($item->has('tags')){
+
+	// 	foreach($item->tags as $tag){
+	// 		return $tag->whereId(4)->update([
+	// 			'name'=>'Insect Killer'
+	// 		]);
+	// 	}
+
+	// }
+
+
+
+	// $item = Item::findOrFail($id); //created
+	// $tag = Tag::findOrFail(4);
+	// $item->tags()->save($tag);
+	// return "Data Updated";
+
+	// $item = Item::findOrFail($id); //added
+	// $tag = Tag::findOrFail(6);
+	// $item->tags()->attach($tag);
+	// return "Data Attached";
+
+	$item = Item::findOrFail($id); // remove or added if not data existed
+	$item->tags()->sync([1,2,5]);
+	return "Data Synced";
+
+});
+
+
+Route::get('items/{id}/tag/delete',function($id){
+
+	// $item = Item::findOrFail($id);
+	// if($item->has('tags')){
+
+	// 	foreach($item->tags as $tag){
+	// 		$tag->whereId(6)->delete();
+	// 	}
+
+	// }
+	// return "Data Deleted";
+
+
+
+	$item = Item::findOrFail($id);
+	$item->tags()->delete();
+	return "Data Deleted";
+
+});
+
+
+// ----------------------------------------------------------------------
+
+
+
+
+
+

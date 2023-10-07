@@ -1,0 +1,166 @@
+=>Commands
+
+php artisan (php artisan .. နဲ့ပက်သက်တဲ့codeတွေပြပေးမှာ)
+
+=>server run
+php artisan serve
+
+=>build controller
+php artisan make:controller employeesController
+
+=>Stop Project  (503 error maintenance mode)
+php artisan down
+
+=>Stop Project (by redirect) (ဒီ page က maintenance လုက်ချင်လို့ရောက်လာတဲ့ဟာကို google ဆီအကုန်ပို့လိုက်တာ)
+php artisan down --redirect=/https://google.com
+
+=>Resume Project (ရပ်ထားတာကို maintain လုပ်ထားတာကို ပြန် run ချင်ရင်ဒါသုံး)
+php artisan up
+
+
+=>Check route list (ကိုဘာrouteတွေလုပ်ထားလဲ ရှိသမျှကြည့်တာ)
+php artisan route:list //a to z ASC
+php artisan route:list -r //z to a DESC
+
+=>Check route list by path
+php artisan route:list --path=staff // staffနဲ့ပက်သက်တဲ့ route တွေအကုန်ကျလာမှာ atoz
+php artisan route:list --path=staff -r // ztoa
+php artisan route:list --path=student
+
+
+=>Check route list by method
+php artisan route:list --method=get //get နဲ့ပို့တာတွေအကုန်ပြ
+php artisan route:list --method=get -r
+php artisan route:list --method=post
+
+(redirect နဲ့ပို့တဲ့ဟာဆို ANY နဲ့ပါတာ get,post၂ခုလုံးမှာပြမယ်)
+
+
+
+
+
+=>Migration
+
+=>Create New Table
+php artisan make:migration create_students_table
+
+=>tables to update db server
+php artisan migrate
+
+
+=>List all files from database > migrations files
+(ဘယ် db ကrunနေလည်း ဘာတွေရှိလဲပြတာ)
+php artisan migrate:status
+
+php artisan migrate:rollback
+
+=>Undo migration by step (selected count to table)
+php artisan migrate:rollback --step=2
+
+=>Check before rollback table list
+php artisan migrate:rollback --pretend
+
+=>Delete all tables (dbထဲက tableအကုန်ပျက်တာ)
+php artisan migrate:reset
+
+php artisan migrate:refresh
+
+
+=>Add New Columns
+php artisan make:migration add_city_to_shoppers_table --table=shoppers
+
+
+
+=>Rename Columns renameColumn(from,to)
+php artisan make:migration rename_students_column --table=students
+=>up
+$table->renameColumn('phonenumber','phone');
+$table->renameColumn('address','city');
+=>down
+$table->renameColumn('phone','phonenumber');
+$table->renameColumn('city','address');
+
+
+=>Rename Table  rename(from,to)
+php artisan make:migration rename_employees_to_customers --table=employees
+=>up
+Schema::rename('employees','customers');
+=>down
+Schema::rename('customers','employees');
+
+
+
+=>CRUD
+DB::select
+DB::insert
+DB::update
+DB::delete
+
+DB::table('tablename')->get(); //tableထဲကdataအကုန်ဆွဲထုတ်ပေးမှာ
+
+
+// =>select(columns)
+// =>selectRaw(expression)
+
+DB::table('tablename')->select()->get();
+DB::table('tablename')->selectRaw()->get();
+
+
+
+
+=>Generate Model Class (Model typically live in the app\Models directory and extends Illuminate\Database\Eloquent\Model class.)
+(model nameပေးရင် ရှေ့စာလုံးအကြီးပေး nameမှာ s ပြန်မပါရ)
+=Command Line (Just Model)
+php artisan make:model Post (tb migrateလုပ်ထားပြီးသားမလို့)
+
+=Command Line ( Model + Migration )
+php artisan make:model Article --migration
+or
+php artisan make:model Article --m
+
+
+
+
+// =>Retrieving Or Creating Data to Model 
+
+Route::get('articles/create',function(){
+
+	// $article = Article::firstOrCreate([
+	// 	'title'=>'this is new article 1'
+	// ]);
+	// return "Retrieve Data or insert $article";
+
+
+	// $article = Article::firstOrCreate([
+	// 	'title'=>'this is new article 15',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+	// 	'user_id'=>3,
+	// 	'rating'=>2
+	// ]);
+	// return "Retrieve Data or insert $article";
+
+	//ပထမarrကဟာကိုပဲတိုက်စစ်မှာ
+	$article = Article::firstOrCreate(
+		['title'=>'this is new article 17'],
+		[
+			'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+			'user_id'=>1,
+			'rating'=>5
+		]);
+	return "Retrieve Data or insert $article";
+
+
+});
+
+
+-----------------------------------------------
+
+=>Change Larvel Timezone
+
+app > 'timezone' => 'Asia/Yangon',
+
+Note:: php artisan config:clear (timezone changeမသွားရင် ဒီလိုclearလုပ်ပေးရ)
+
+
+
+29TZ

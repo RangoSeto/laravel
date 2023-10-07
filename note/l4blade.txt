@@ -1,0 +1,67 @@
+=>Blade
+
+filename.blade.php
+
+
+php artisan make:controller employeesController
+
+
+=>Passing Data from Route/Controller
+(i) view(view,arrayvariable) 
+		or 
+	view(view,['string'=>$variable,'string'=>$variable]);
+(ii) with(,); //para ၂ခုပဲရှိ
+(iii) compact(,,...);
+
+//asso arr ဆို var နဲ့ တန်းပေးလို့ရ ရိုးရိုးဆို []နဲ့ပို့ပေးရမှာ
+
+// route,controller ကနေရော၂မျိုးလုံးကနေပို့လို့ရ
+
+
+
+$students = [
+            "Honey Nway Oo",
+            "Mandalay",
+            "011111"
+        ];
+
+return view('employees/datatwo',['students'=>$students]);
+(ရိုးရိုး arrဆို ဒီတိုင်း[] နဲ့ထုတ်ပေးရမယ်)
+
+
+
+$data['employeedata'] = [
+            'name'=>'Aung Ko Ko',
+            'email'=>'aungkoko@gmail.com',
+            'phone'=>'09123456'
+        ];
+
+// dd($data); //dataထုတ်ကြည့်တဲ့ဟာ echoလိုဟာမျိူး
+
+return view('employees/index',$data);
+($data['employeedata']ဒီလိုဆို varဒီတိုင်းပဲပို့လိုက်လို့ရ)
+
+
+<?php
+    foreach($employeedata as $value){
+        echo $value;
+    }
+?>
+
+@php 
+    foreach($employeedata as $value){
+        echo $value;
+    }
+@endphp -->
+<!-- bladeမှာဒီလိုပုံစံနဲ့ရေးလို့ရ @ -->
+
+<ul>
+    @foreach($employeedata as $value) <!-- ဒီ၁ကြောင်းကပဲphp code ကြားထဲကဟာတွေနဲ့မဆိုင်ဘူး -->
+        <!-- <li>{{$value}}</li> -->
+        <li>{!!$value!!}</li>
+    @endforeach  <!--ဒီ၁ကြောင်းကပဲphp code -->
+</ul>
+
+
+with(,) က parameter2ခုပဲသုံးလို့ရမယ် ဒါပေမယ့် ထပ်၁လဲလဲခေါ်သုံးလို့ရမယ်, 
+compact()နဲ့ဆိုparameterအများကြီးရမယ်

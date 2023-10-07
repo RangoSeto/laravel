@@ -1,0 +1,67 @@
+=> MVC Framework (Modal,View,Controller)
+
+=Modal
+it's work with database (Select,Insert,Update,Delete) (database တွေရေး)
+communicate with the controller (when controller request or a data to modal ! model supplies that)
+
+=View (HTML,CSS,..)
+A view is the part of the application that resprentents the presentation of data HTML CSS code for end user.
+
+=Controller
+the controller receives input from the user, they request the process (GET,POST,PUT,DELETE)
+
+-----------------------------------------------
+
+Version Needed
+
+php 8.1 နဲ့အထက်
+conposer 2.4 နဲ့အထက်
+
+php -v 
+php --version 
+
+composer
+
+-------------------------------------------------
+
+=>Installation
+
+Method 1
+composer create-project laravel/laravel projectname
+
+Method 2
+composer global require laravel/installer
+laravel new projectname
+
+-------------------------------------------------
+
+=>Folder and File Structure
+
+app > Http > Controller
+app > Http > Models
+app > database > migrations
+app > public (for public custom css / custom js)
+resources > views 
+routes > web.php (or) routes > api.php 
+.env (api,db တွေချိတ်မယ့်နေရာ)
+
+
+
+-------------------------------------------------
+
+=>Run Project
+php artisan serve
+
+=>Stop Project  (503 error maintenance mode)
+php artisan down ( design ရှိနေသေး ,project ကတော့ run နေသေးပေမယ့် unavaiable ဆိုတဲ့ site ပဲရနေမှာ)
+
+=>Stop Project (by redirect) (ဒီ page က maintenance လုက်ချင်လို့ရောက်လာတဲ့ဟာကို google ဆီအကုန်ပို့လိုက်တာ)
+php artisan down --redirect=/https://google.com
+
+=>Resume Project (ရပ်ထားတာကို maintain လုပ်ထားတာကို ပြန် run ချင်ရင်ဒါသုံး)
+php artisan up
+
+
+-------------------------------------------------
+
+

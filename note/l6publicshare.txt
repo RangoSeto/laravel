@@ -1,0 +1,41 @@
+=>Public Data Passing(ဒီကဟာကို ဘယ်controller ဘယ်နေရာကဖြစ်ဖြစ် ခေါ်သုံးလို့ရ) (view ရဲ့ကြိုက်တဲ့နေရာကနေခေါ်လို့ရ)
+
+app > Providers > AppServiceProvider.php
+
+
+
+( * = fileတွေအကုန်လုံးကိုပေးတာ )
+view()->composer('*',function($view){
+    $getyear = date('Y');
+    $view->with('getyear',$getyear); 
+});
+
+(## with() နဲ့ပဲသုံးလို့ရ)
+
+
+
+(method အနေနဲ့သုံးလို့ရ useနဲ့ပြန်သုံးပေးရမယ်)(**Facades\View**) View::သုံးထားလို့ \Viewဖြစ်တာ
+
+use Illuminate\Support\Facades\View;
+
+View::composer('*',function($view){
+            $getyear = date('Y'); // 2023
+            $gettoday = date("d/M/Y"); // 17/Jun/2023
+            $view->with('getyear',$getyear)->with('gettoday',$gettoday);
+        });
+
+
+(employees.index အတွက်ပဲ ဒါကသုံးရမယ် , $thanks ကအဲ့နေရာကနေပဲသုံးလို့ရမယ် ကျန်တဲ့နေရာကခေါ်သုံးလို့မရ)
+View::composer('employees.index',function($view){
+            $thanks = "Thank you for shopping with us.";
+            $view->with('thanks',$thanks);
+        });
+
+
+
+(၁ကြောင်းထဲ shorthand ရေးတဲ့နည်း)
+
+View::share('demo','Do you want our demo version.');
+
+
+data passing လုပ်တာ ၃နည်းသိသွားပီ

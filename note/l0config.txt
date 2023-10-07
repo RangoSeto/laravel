@@ -1,0 +1,61 @@
+=>Custom Config
+
+env file မှာ အပြောင်းအလွဲတွေရေးပြီးရင် serverကိုပြန်ပိတ်ပြီး ပြန် run ပေးရမယ်
+APP_NAME ရဲ့ name ကခွဲရေးမယ်ဆို "" or '' သုံးရမယ် ၁ခုထဲဆို ဒီတိုင်းရေးလို့ရ
+
+APP_NAME="YOU Project Name";
+
+
+
+
+=>Local (Dev)
+APP_DEBUG=true (error တွေကိုပြပေးမှာ)
+
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1 (ဝယ်လာတဲ့ domain name = dataland.com)
+DB_PORT=3306 (xammp ,. ရဲ့ port ,database ရဲ့ run နေတဲ့ Port)
+DB_DATABASE=laravel (database name like, phpdbone)
+DB_USERNAME=root
+DB_PASSWORD=
+
+(ပေးသိလို့ရ)
+
+
+
+
+=>SERVER (Operation) user တွေသုံးနေပြီ
+APP_DEBUG=false (ကို့ရဲ့ error တွေကို ui မှာမပြစေချင်တော့လို့ falseထား)
+
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=
+
+(ပေးမသိရမယ့်ဟာ)
+
+
+=======================
+
+Mail_MAL.... API ချိတ်တဲ့နေရာ
+mailgun.com => auto email ပို့ပေးမှာ (email provider)
+
+AWS_Ac....
+user ထည့်လိုက်တဲ့ pf,vdo တွေက routes>storage ထဲသွားသိမ်းမှာ serverကြီးက siteကြီးသွားလို့ aws server api နဲ့ချိတ်ပြီးသုံးမှာ
+
+
+Timezone ကိုသွားပြောင်းပေးကိုပေးရမှာ config>app.php
+
+
+.env file က app.php နဲ့ချိတ်နေတာ app.phpထဲကစာတွေကိုလွယ်ကူအောင် .env file ကလုပ်ပေးထားတာ
+
+
+view က html fileတွေကို views> welcome.blade.php ထဲမှာရေး
+file name က filename.blade.php နဲ့ပေးရမယ်
+
+view ထဲက file တွေကိုဖွင့်ဖို့ route နဲ့ဖွင့်
+view('welcome') function ထဲမှာ filename
+

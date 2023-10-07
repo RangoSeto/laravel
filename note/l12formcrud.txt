@@ -1,0 +1,80 @@
+=> Form CRUD
+
+=Migration
+
+php artisan make:model Country -m
+
+$table->string('name');
+$table->string('capital');
+$table->string('currency');
+$table->text('content');
+$table->integer('user_id')->unsigned();
+
+php artisan migrate:status
+php artisan migrate
+
+
+=In Model (Country.php)
+protected $table = 'countries';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'name',
+        'capital',
+        'currency',
+        'content',
+        'user_id'
+    ];
+
+
+=In Model (User.php)
+
+public function countries(){
+        return $this->hasMany(Country::class);
+    }
+
+
+=In CMD
+=> Resource Controller (သူ့အတွက် crud တွေကို auto လုပ်ပေးထားပီးသား)
+
+php artisan make:controller CountriesController --resource
+(or)
+php artisan make:controller CountriesController -r
+
+php artisan route:list
+php artisan route:list --path=countries
+
+
+=In Web
+(Route::resource က resourceထဲက index, delete,..တွေအကုန်လုံးခေါ်ထားပီးသား)
+Route::resource('countries',CountriesController::class);
+
+
+=In Controller (CountriesConroller)
+public function create()
+    {
+        return view('countries.create');
+    }
+
+//Requestက view ထဲက name တွေကိုလှမ်းခေါ်နေတာ
+public function store(Request $request)
+    {
+        return $request->all();
+    }
+
+
+
+
+
+
+//data submitလုပ်တာကို laravel ကနေ security ခံပေးထားတာ
+{{-- csrf = Cross-site request forgery --}}
+
+{{ csrf_field() }} 
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
+@csrf
+
+
+    {{-- <form action="/countries" method="POST"> --}} //routeနဲ့တန်းခေါ်ရင် / လေးမပါမဖြစ်
+    <form action="{{route('countries.store')}}" method="POST"> //route nameနဲ့ခေါ်တဲ့ပုံစံ
+
+

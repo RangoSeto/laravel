@@ -1,0 +1,92 @@
+=>Soft Delete
+
+=In Model 
+(သုံးမယ့် modelထဲမှာသွားရေးပေးရမယ် အဲ့ modelထဲမှာပဲဖျက်မှ temp ထဲဝင်မှာ ၁ခြားမသုံးထားတဲ့modelဆို permenent ပျက်သွားမယ်)
+use Illuminate\Database\Eloquent\SoftDeletes;
+use SoftDeletes;
+
+php artisan make:migration add_softdelete_to_articles_table --table=articles
+=up
+$table->softDeletes();
+=down
+$table->dropSoftDeletes();
+
+php artisan migrate:status
+php artisan migrate
+
+
+
+
+	// $article = Article::find(1);
+
+	// $article = Article::findOrFail(2);
+	// $article->delete();
+	// return "Data Delete Successfully = $article";
+
+	// $article = Article::where('rating',3)->delete();
+	// return "Data Delete Successfully = $article";
+
+
+
+	// Bulk Delete (Note :: must be primary key)
+	// $article = Article::destroy(12);
+
+	// $article = Article::destroy(10,11);
+
+	// $article = Article::destroy([1,2,3,4]);
+	// $article = Article::destroy(collect([7,8,9]));
+
+	// return "Data Delete Successfully = $article";
+
+
+
+	// = truncate (Be careful & ID will start 1 again)
+	// Article::truncate();
+	// return "Data Truncate Successfully";
+
+
+	// $article = Article::findOrFail(1);
+	// $article->delete();
+
+	$article = Article::destroy(5,6,7);
+
+	// $article = Article::destroy(8,9);
+
+	$article = Article::destroy(collect([3,4]));
+
+
+=>softDelete (restore)
+Route::get('articles/restore',function(){
+
+	// Article::withTrashed()->restore(); //အကုန်ပြန်ရတာ
+	// return "Restore From Trash Successfully.";
+
+	Article::withTrashed()->where('rating',5)->restore();
+	return "Restore From Trash Successfully.";
+
+});
+
+
+=>forceDelete
+
+Route::get('articles/forcedelete',function(){
+
+	// $article = Article::findOrFail(1);
+	// $article->delete();
+
+	$article = Article::findOrFail(2);
+	$article->forceDelete(); //softdelete ထဲမဝင်ဘဲနဲ့ ၁ခါတည်းလုံးဝအသေပျက်သွားတယ်
+
+	// *Result = 404 Not Found. cuz 4 is already in soft delete
+	// $article = Article::findOrFail(4);
+	// $article->delete();
+
+	// *Result = 404 Not Found. cuz 4 is already in soft delete
+	// $article = Article::findOrFail(4);
+	// $article->forceDelete();
+
+	return "Data Force Delete Successfully";
+
+});
+
+

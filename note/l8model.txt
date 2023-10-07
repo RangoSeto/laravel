@@ -1,0 +1,179 @@
+=>Model
+=>Database Eloquent ORM (Object-Relational Mapper)
+
+=>Generate Model Class (Model typically live in the app\Models directory and extends Illuminate\Database\Eloquent\Model class.)
+(model nameပေးရင် ရှေ့စာလုံးအကြီးပေး nameမှာ s ပြန်မပါရ)
+=Command Line (Just Model)
+php artisan make:model Post (tb migrateလုပ်ထားပြီးသားမလို့)
+
+=Command Line ( Model + Migration )
+php artisan make:model Article --migration
+or
+php artisan make:model Article --m
+
+
+----------------------------------
+
+php artisan model:show Article
+
+----------------------------------
+
+=>Useful keywords in Model
+
+=Table Name (ဒီmodelမှာသုံးမယ့် tableကဒါဆိုတာပြောတာ)
+protected $table = 'articles';
+
+=Customize Timestamp
+const CREATED_AT = "created_date";
+const UPDATED_AT = "updated_date";
+
+
+=Primary Key
+protected $primaryKey = 'id';
+
+
+php artisan migrate:status
+php artisan migrate
+
+
+php artisan model:show Article
+
+----------------------------------
+
+=>Retrieving Datas By Model (Single / Multi)
+
+// sro 
+
+// use App\Models\Article
+Route::get('articles/read',function(){
+
+	$articles = Article::all();
+	return $articles;
+
+	// $articles = Article::all();
+	// return "$articles";
+
+	$articles = Article::all();
+	// dd("$articles");
+	// var_dump($articles);
+
+	foreach($articles as $article){
+		echo "$article->title <br/> $article->description <hr/>";
+	}
+});
+
+
+
+=>Retrieve a data by primary key from model
+
+Route::get('articles/find',function(){
+	$articles = Article::find(5); //findကprimary keyပေးထားတဲ့ဟာနဲ့သွားအလုပ်လုပ်မှာ
+	return $articles;
+});
+
+
+=Not Found Exception
+$article = Article::findOrFail(20); //20ဆိုတဲ့dataမရှိရင် errorမပြဘဲနဲ့ not found page ပဲပြလိုက်တာ
+return $article; //404 Not Found
+
+
+=>Retrieving Data matching by where method
+
+Route::get('articles/where',function(){
+
+	// $article = Article::where('user_id',2)->get();
+	// return $article;
+
+	// = asc/desc
+	$article = Article::where('user_id',1)->orderBy('id','desc')->get();
+	// $articles = Article::where('user_id',1)->orderByDesc('id')->get(); //orderByAsc တော့မရှိ
+
+	return $article;
+
+});
+
+
+=> conditionစစ်ထားပြီးသားထဲကနေ ဘယ်နှခုပဲယူမယ်လို့ပြန်ပြောတာ (take , limitအတူတူပဲ)
+$article = Article::where('user_id',2)->orderBy('id','desc')->take(3)->get();
+return $article;
+
+$article = Article::where('user_id',2)->orderBy('id','asc')->limit(3)->get();
+return $article;
+
+
+
+$articles = Article::where('user_id',2)->first();
+return $articles;
+
+$articles = Article::where('id',">",3)->get();
+return $articles;
+
+$articles = Article::where('id',2)->select('user_id','title','description')->get();
+return $articles;
+
+$articles = Article::where('id',2)->pluck('description'); //array
+$articles = Article::where('id',2)->pluck('description','id'); //object
+
+
+
+$articles = Article::firstWhere('user_id',2);
+return $articles;
+
+findOr('id',callback)
+$article = Article::findOr('50',function(){
+	return "Hello sir there is no result for Primary ID 12";
+});
+return $article;
+
+
+
+
+// Mass Assignment
+// Method 1
+
+protected $fillable = [
+    'title',
+    'description',
+    'user_id',
+    'rating'
+];
+
+// Method 2
+protected $guarded = [];
+
+
+
+// =>Retrieving Or Creating Data to Model 
+
+Route::get('articles/create',function(){
+
+	// $article = Article::firstOrCreate([
+	// 	'title'=>'this is new article 1'
+	// ]);
+	// return "Retrieve Data or insert $article";
+
+	
+	// $article = Article::firstOrCreate([
+	// 	'title'=>'this is new article 15',
+	// 	'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+	// 	'user_id'=>3,
+	// 	'rating'=>2
+	// ]);
+	// return "Retrieve Data or insert $article";
+
+	//ပထမarrကဟာကိုပဲတိုက်စစ်မှာ
+	$article = Article::firstOrCreate(
+		['title'=>'this is new article 17'],
+		[
+			'description'=>'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+			'user_id'=>1,
+			'rating'=>5
+		]);
+	return "Retrieve Data or insert $article";
+
+
+});
+
+
+
+(** []ထဲမှာဆို arrow က => ကျန်တာက -> )
