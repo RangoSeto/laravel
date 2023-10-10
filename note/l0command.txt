@@ -161,6 +161,15 @@ app > 'timezone' => 'Asia/Yangon',
 
 Note:: php artisan config:clear (timezone changeမသွားရင် ဒီလိုclearလုပ်ပေးရ)
 
+------------------------------------------------
 
+// => 2. Storage Folder / Local Driver (storage/app/customfolder)
 
-29TZ
+php artisan storage:link
+
+$request->image->store('path/');
+
+use Illuminate\Support\Facades\Storagee
+Storage::disk('local')->put('$customfolder',$file,content,'optional');
+
+$request->image->storeAs($file,$imagename,optional drive);

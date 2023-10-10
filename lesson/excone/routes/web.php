@@ -7,6 +7,8 @@ use App\Http\Controllers\studentsController;
 use App\Http\Controllers\staffsController;
 use App\Http\Controllers\dashboardsController;
 use App\Http\Controllers\membersController;
+use App\Http\Controllers\ProductsController;
+
 use Illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Models\Gender;
@@ -1449,8 +1451,7 @@ Route::get('items/{id}/tag/delete',function($id){
 	// }
 	// return "Data Deleted";
 
-
-
+	
 	$item = Item::findOrFail($id);
 	$item->tags()->delete();
 	return "Data Deleted";
@@ -1466,3 +1467,101 @@ Route::resource('countries',CountriesController::class);
 
 // Route::resource('countries',CountriesController::class)->except('destroy');
 // Route::get('countries/delete/{id}',[CountriesController::class,'destroy'])->name('countries.delete');
+
+
+Route::get('/dates',function(){
+
+	$date = new DateTime();
+	echo $date->format('d m Y'); // 07 10 2023
+	echo "<br/>";
+
+	$date = new DateTime();
+	echo $date->format('Y m d'); // 2023 10 07
+	echo "<br/>";
+
+	echo $date->format('m d Y'); // 10 07 2023
+	echo "<br/>";
+
+	echo $date->format('d/m/Y');  // 07/10/2023
+	echo "<br/>";
+
+	echo $date->format('d-m-Y'); // 07-10-2023
+
+	echo "<hr/>";
+
+
+	$date = new DateTime('+5 day'); // 12 10 2023
+	echo $date->format('d m Y');
+	echo "<br/>";
+
+	$date = new DateTime('+1 week'); // 14 10 2023
+	echo $date->format('d m Y');
+
+	echo "<hr/>";
+
+
+	echo Carbon::now(); // 2023-10-07 20:46:36
+	echo "<br/>";
+
+	echo Carbon::now()->addDays(10); // 2023-10-17 20:46:36
+	echo "<br/>";
+
+	echo Carbon::now()->addDays(1)->diffForHumans(); // 23 hours from now
+	echo "<br/>";
+
+	echo Carbon::now()->addDays(3)->diffForHumans(); // 2 days from now
+	echo "<br/>";
+
+	echo Carbon::now()->addDays(10)->diffForHumans(); // 1 week from now
+	echo "<br/>";
+
+
+	echo Carbon::now()->subDay(1); // 2023-10-06 20:51:29
+	echo "<br/>";
+
+	echo Carbon::now()->subDay(1)->diffForHumans(); // 1 day ago
+	echo "<br/>";
+
+	echo Carbon::now()->subDay(3)->diffForHumans(); // 3 days ago
+	echo "<br/>";
+
+	echo Carbon::now()->subDay(10)->diffForHumans(); // 1 week ago
+	echo "<br/>";
+
+
+	echo Carbon::now()->addMonths(1); // 2023-11-07 20:57:31
+	echo "<br/>";
+
+	echo Carbon::now()->addMonths(1)->diffForHumans(); // 4 weeks from now
+	echo "<br/>";
+
+	echo Carbon::now()->addMonths(3)->diffForHumans(); // 2 months from now
+	echo "<br/>";
+
+	echo Carbon::now()->addMonths(10)->diffForHumans(); // 9 months from now
+	echo "<br/>";
+
+
+	echo Carbon::now()->subMonths(1); // 2023-09-07 21:00:03
+	echo "<br/>";
+
+	echo Carbon::now()->subMonths(1)->diffForHumans(); // 1 month ago
+	echo "<br/>";
+
+	echo Carbon::now()->subMonths(3)->diffForHumans(); // 3 months ago
+	echo "<br/>";
+
+	echo Carbon::now()->subMonths(10)->diffForHumans(); // 10 months ago
+	echo "<br/>";
+
+
+	echo Carbon::now()->yesterday()->diffForHumans(); // 1 day ago
+	echo "<br/>";
+
+	echo Carbon::now()->tomorrow()->diffForHumans(); // 2 hours from now(နောက်နေ့ရောက်ဖို့၂နာရီ‌လောက်ပဲလို‌တော့လို့)
+	echo "<br/>";
+
+
+});
+
+Route::resource('products',ProductsController::class);
